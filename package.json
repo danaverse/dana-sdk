@@ -1,0 +1,45 @@
+{
+  "name": "@bcpros/lixi-handle",
+  "version": "0.0.1",
+  "description": "Library for lixi-handle transaction building",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && tsc -p ./tsconfig.build.json",
+    "test": "mocha --import=tsx ./src/*.test.ts ./src/**/*.test.ts",
+    "integration-tests": "mocha --import=tsx ./tests/*.test.ts --timeout 60000",
+    "coverage": "nyc npm run test",
+    "junit": "npm run test --reporter mocha-junit-reporter"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:bcProFoundation/lixi-handle.git"
+  },
+  "keywords": [
+    "ecash",
+    "xec",
+    "bitcoin"
+  ],
+  "bugs": {
+    "url": "https://github.com/bcProFoundation/lixi-handle/issues"
+  },
+  "author": "vince.tran8x@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "ecash-lib": "^0.1.3"
+  },
+  "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.10",
+    "chai": "^5.1.1",
+    "chronik-client": "^0.26.2",
+    "mocha": "^10.6.0",
+    "mocha-junit-reporter": "^2.2.1",
+    "nyc": "^17.0.0",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.16.0"
+  }
+}
