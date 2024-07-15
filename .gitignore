@@ -128,3 +128,23 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+
+# misc
+.DS_Store
+*.pem
+
+# turbo
+.turbo
+.turbo/*
+
+# Jetbrains
+.idea
+
+# env vars
+.env
+
+# documentation
+docs
+
