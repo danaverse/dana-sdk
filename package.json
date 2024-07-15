@@ -1,45 +1,64 @@
 {
-  "name": "@bcpros/lixi-handle",
-  "version": "0.0.1",
-  "description": "Library for lixi-handle transaction building",
+  "name": "dana-sdk",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Library for all dana protocols",
   "main": "index.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "build": "tsc && tsc -p ./tsconfig.build.json",
-    "test": "mocha --import=tsx ./src/*.test.ts ./src/**/*.test.ts",
-    "integration-tests": "mocha --import=tsx ./tests/*.test.ts --timeout 60000",
-    "coverage": "nyc npm run test",
-    "junit": "npm run test --reporter mocha-junit-reporter"
+    "build": "pnpm clean && turbo build",
+    "clean": "rimraf packages/*/*/dist packages/*/dist",
+    "test": "turbo run test --no-cache",
+    "dev": "turbo dev",
+    "dev:packages": "pnpm preconstruct dev",
+    "lint": "turbo run lint --parallel",
+    "lint:fix": "turbo run lint:fix --parallel --no-cache"
   },
   "repository": {
     "type": "git",
-    "url": "git+git@github.com:bcProFoundation/lixi-handle.git"
+    "url": "git+git@github.com:bcProFoundation/dana-sdk.git"
   },
   "keywords": [
-    "ecash",
+    "dana",
     "xec",
-    "bitcoin"
+    "xpi"
   ],
   "bugs": {
-    "url": "https://github.com/bcProFoundation/lixi-handle/issues"
+    "url": "https://github.com/bcProFoundation/dana-sdk/issues"
   },
   "author": "vince.tran8x@gmail.com",
   "license": "MIT",
-  "dependencies": {
-    "ecash-lib": "^0.1.3"
-  },
   "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@types/chai": "^4.3.16",
-    "@types/mocha": "^10.0.7",
-    "@types/node": "^20.14.10",
-    "chai": "^5.1.1",
-    "chronik-client": "^0.26.2",
-    "mocha": "^10.6.0",
-    "mocha-junit-reporter": "^2.2.1",
-    "nyc": "^17.0.0",
-    "source-map-support": "^0.5.21",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.3",
-    "typescript-eslint": "^7.16.0"
+    "eslint": "9.6.0",
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "prettier-plugin-packagejson": "2.5.0",
+    "prettier-plugin-stylex-key-sort": "^1.0.1",
+    "rimraf": "^6.0.1",
+    "syncpack": "^12.3.2",
+    "turbo": "^1.13.3"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "react",
+        "react-native"
+      ],
+      "allowedVersions": {}
+    },
+    "overrides": {}
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "packageManager": "pnpm@9.4.0",
+  "preconstruct": {
+    "packages": [
+      "packages/client"
+    ]
   }
 }

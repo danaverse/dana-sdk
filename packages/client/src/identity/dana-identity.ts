@@ -1,10 +1,23 @@
 
 import { Writer, WriterBytes, WriterLength, strToBytes, fromHex, fromHexRev } from "ecash-lib";
-import { BURN, GENESIS, GenesisInfo, SEND } from "./common";
+
+export const GENESIS = strToBytes('GENESIS');
+export const SEND = strToBytes('SEND');
+export const BURN = strToBytes('BURN');
+
+/** Genesis info found in GENESIS txs of tokens */
+export interface GenesisInfo {
+  /** name of the id */
+  name?: string;
+  /** type of the arbitrary data */
+  namespace?: string;
+  /** auth_pubkey of the token (only on ALP) */
+  authPubkey?: string;
+}
 
 
-/** LOKAD ID for ALP */
-export const HDLE_LOKAD_ID = strToBytes('HDLE');
+/** LOKAD ID for DANA Identity */
+export const DANA_ID_LOKAD_ID = strToBytes('DNID');
 
 function putVarBytes(bytes: Uint8Array, writer: Writer) {
   if (bytes.length > 127) {
@@ -16,15 +29,16 @@ function putVarBytes(bytes: Uint8Array, writer: Writer) {
 
 
 /** Build an Burn Handle GENESIS pushdata section */
-export function hdleGenesis(
+export function idGenesis(
+  version: number,
   genesisInfo: GenesisInfo,
 ): Uint8Array {
   const writeSection = (writer: Writer) => {
-    writer.putBytes(HDLE_LOKAD_ID);
+    writer.putBytes(DANA_ID_LOKAD_ID);
+    writer.putU8(version);
     putVarBytes(GENESIS, writer);
-    putVarBytes(strToBytes(genesisInfo.handleName ?? ''), writer);
-    putVarBytes(strToBytes(genesisInfo.dataType ?? ''), writer);
-    putVarBytes(strToBytes(genesisInfo.dataValue ?? ''), writer);
+    putVarBytes(strToBytes(genesisInfo.name ?? ''), writer);
+    putVarBytes(strToBytes(genesisInfo.namespace ?? ''), writer);
     putVarBytes(fromHex(genesisInfo.authPubkey ?? ''), writer);
   };
   const writerLength = new WriterLength();
@@ -37,15 +51,15 @@ export function hdleGenesis(
 /**
  * Build an Burn Handle SEND pushdata section, moving the handle to different outputs
  **/
-export function hdleSend(
-  handleId: string,
+export function idSend(
+  id: string,
 ): Uint8Array {
-  const handleIdBytes = fromHexRev(handleId);
+  const idBytes = fromHexRev(id);
   const writeSection = (writer: Writer) => {
-    writer.putBytes(HDLE_LOKAD_ID);
+    writer.putBytes(DANA_ID_LOKAD_ID);
     writer.putU8(SEND.length);
     writer.putBytes(SEND);
-    writer.putBytes(handleIdBytes);
+    writer.putBytes(idBytes);
   };
   const writerLength = new WriterLength();
   writeSection(writerLength);
@@ -55,12 +69,12 @@ export function hdleSend(
 }
 
 /** Build an Burn Handle BURN pushdata section, intentionally burning the handle. */
-export function hdleBurn(
+export function idBurn(
   handleId: string,
 ): Uint8Array {
   const handleIdBytes = fromHexRev(handleId);
   const writeSection = (writer: Writer) => {
-    writer.putBytes(HDLE_LOKAD_ID);
+    writer.putBytes(DANA_ID_LOKAD_ID);
     writer.putU8(BURN.length);
     writer.putBytes(BURN);
     writer.putBytes(handleIdBytes);
