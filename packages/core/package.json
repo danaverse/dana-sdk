@@ -1,5 +1,5 @@
 {
-  "name": "@bcpros/lixi-handle",
+  "name": "@dana-protocols/core",
   "version": "0.0.1",
   "description": "Library for lixi-handle transaction building",
   "main": "index.js",

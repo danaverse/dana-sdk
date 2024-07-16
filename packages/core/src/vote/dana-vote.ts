@@ -11,14 +11,14 @@ export const DANA_VOTE_TYPE_ID = 1;
 export const DANA_VOTE_TYPE_HASH = 2;
 
 
-export type DANA_VOTE_DIRECTION = typeof DANA_VOTE_UP | typeof DANA_VOTE_DOWN;
-export type DANA_VOTE_TYPE = typeof DANA_VOTE_TYPE_ID | typeof DANA_VOTE_TYPE_HASH;
+export type DanaVoteDirection = typeof DANA_VOTE_UP | typeof DANA_VOTE_DOWN;
+export type DanaVoteForType = typeof DANA_VOTE_TYPE_ID | typeof DANA_VOTE_TYPE_HASH;
 
 
 export function danaVote(
   version: number,
-  direction: DANA_VOTE_DIRECTION,
-  type: DANA_VOTE_TYPE,
+  direction: DanaVoteDirection,
+  type: DanaVoteForType,
   voteFor: string,
   amount: Amount,
   voteById?: string,

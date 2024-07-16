@@ -1,31 +1,32 @@
 
 import { Writer, WriterBytes, WriterLength, strToBytes, fromHex, fromHexRev } from "ecash-lib";
+import { putVarBytes } from "../common";
 
 export const GENESIS = strToBytes('GENESIS');
 export const SEND = strToBytes('SEND');
 export const BURN = strToBytes('BURN');
 
+/** LOKAD ID for DANA Identity */
+export const DANA_ID_LOKAD_ID = strToBytes('DNID');
+
+export const DANA_ID_TYPE_PROFILE = 0;
+export const DANA_ID_TYPE_PAGE = 1;
+export type DanaIdType = typeof DANA_ID_TYPE_PROFILE | typeof DANA_ID_TYPE_PAGE;
+
+
 /** Genesis info found in GENESIS txs of tokens */
 export interface GenesisInfo {
   /** name of the id */
   name?: string;
-  /** type of the arbitrary data */
+  /** type of the id: profile or page */
+  type?: DanaIdType;
+  /** namespace of the id */
   namespace?: string;
   /** auth_pubkey of the token (only on ALP) */
   authPubkey?: string;
 }
 
 
-/** LOKAD ID for DANA Identity */
-export const DANA_ID_LOKAD_ID = strToBytes('DNID');
-
-function putVarBytes(bytes: Uint8Array, writer: Writer) {
-  if (bytes.length > 127) {
-    throw new Error('Length of bytes must be between 0 and 127');
-  }
-  writer.putU8(bytes.length);
-  writer.putBytes(bytes);
-}
 
 
 /** Build an Burn Handle GENESIS pushdata section */
@@ -38,6 +39,7 @@ export function idGenesis(
     writer.putU8(version);
     putVarBytes(GENESIS, writer);
     putVarBytes(strToBytes(genesisInfo.name ?? ''), writer);
+    writer.putU8(genesisInfo.type ?? 0);
     putVarBytes(strToBytes(genesisInfo.namespace ?? ''), writer);
     putVarBytes(fromHex(genesisInfo.authPubkey ?? ''), writer);
   };
