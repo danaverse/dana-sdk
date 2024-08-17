@@ -1,21 +1,21 @@
 import { expect } from 'chai';
-import { fromHex } from 'ecash-lib';
+import { fromHex, strToBytes } from 'ecash-lib';
 import {
   DANA_ID_TYPE_PROFILE,
   GenesisInfo,
   idBurn,
   idGenesis,
   idSend
-} from '../packages/core/src/identity/dana-identity';
+} from './dana-identity';
 
 describe('Dana Identity', () => {
   describe('idGenesis', () => {
-    it('should create correct genesis data', () => {
+    it('should create correct profile', () => {
       const genesisInfo: GenesisInfo = {
-        name: 'testName',
+        name: 'test-id',
         type: DANA_ID_TYPE_PROFILE,
-        namespace: 'testNamespace',
-        authPubkey: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+        namespace: 'lixi',
+        authPubkey: '03040506'
       };
       const result = idGenesis(1, genesisInfo);
 
@@ -26,7 +26,7 @@ describe('Dana Identity', () => {
       expect(result[4]).to.equal(1);
 
       // Check GENESIS
-      expect(result.slice(5, 12)).to.deep.equal(new Uint8Array([7, 71, 69, 78, 69, 83, 73, 83]));
+      expect(result.slice(5, 12)).to.deep.equal(strToBytes('GENESIS'));
 
       // Further checks can be added for name, type, namespace, and authPubkey
     });
