@@ -2,18 +2,6 @@
   "name": "@dana-protocols/core",
   "version": "0.0.1",
   "description": "Library for lixi-handle transaction building",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc && tsc -p ./tsconfig.build.json",
-    "test": "mocha --import=tsx ./src/*.test.ts ./src/**/*.test.ts",
-    "integration-tests": "mocha --import=tsx ./tests/*.test.ts --timeout 60000",
-    "coverage": "nyc npm run test",
-    "junit": "npm run test --reporter mocha-junit-reporter"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+git@github.com:bcProFoundation/lixi-handle.git"
-  },
   "keywords": [
     "ecash",
     "xec",
@@ -22,8 +10,20 @@
   "bugs": {
     "url": "https://github.com/bcProFoundation/lixi-handle/issues"
   },
-  "author": "vince.tran8x@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:bcProFoundation/lixi-handle.git"
+  },
   "license": "MIT",
+  "author": "vince.tran8x@gmail.com",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && tsc -p ./tsconfig.build.json",
+    "coverage": "nyc npm run test",
+    "integration-tests": "mocha --import=tsx ./tests/*.test.ts --timeout 60000",
+    "junit": "npm run test --reporter mocha-junit-reporter",
+    "test": "mocha --import=tsx ./src/*.test.ts ./src/**/*.test.ts ./tests/*.test.ts"
+  },
   "dependencies": {
     "ecash-lib": "^0.1.3"
   },

@@ -1,4 +1,4 @@
-import { Amount, Writer } from "ecash-lib";
+import { Amount, Writer } from 'ecash-lib';
 
 function putAlpAmount(amount: Amount, writer: Writer) {
   const amountN = BigInt(amount);

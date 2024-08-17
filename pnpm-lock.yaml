@@ -8,12 +8,33 @@ importers:
 
   .:
     devDependencies:
+      '@types/chai':
+        specifier: ^4.3.16
+        version: 4.3.16
+      '@types/mocha':
+        specifier: ^10.0.7
+        version: 10.0.7
+      chai:
+        specifier: ^5.1.1
+        version: 5.1.1
+      changesets:
+        specifier: ^1.0.2
+        version: 1.0.2
       eslint:
         specifier: 9.6.0
         version: 9.6.0
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@9.6.0)
       husky:
         specifier: ^9.0.11
         version: 9.0.11
+      mocha:
+        specifier: ^10.6.0
+        version: 10.6.0
+      mocha-junit-reporter:
+        specifier: ^2.2.1
+        version: 2.2.1(mocha@10.6.0)
       prettier:
         specifier: ^3.2.5
         version: 3.3.2
@@ -36,7 +57,7 @@ importers:
         specifier: ^1.13.3
         version: 1.13.4
 
-  packages/client:
+  packages/core:
     dependencies:
       ecash-lib:
         specifier: ^0.1.3
@@ -563,6 +584,9 @@ packages:
     resolution: {integrity: sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
+  changesets@1.0.2:
+    resolution: {integrity: sha512-lnXvvqJEcK0z/6RtwKNLbejazl+Hxd1bocMcNgfLHWb4rGxuqkO/LdeGNzwIx3jHj+fNWZ6AGgK5AqNBwva4Xg==}
+
   charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
 
@@ -748,6 +772,12 @@ packages:
   escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+
+  eslint-config-prettier@9.1.0:
+    resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
 
   eslint-scope@8.0.1:
     resolution: {integrity: sha512-pL8XjgP4ZOmmwfFE8mEhSxA7ZY4C+LWyqjQ3o4yWkkmD0qcMT9kkW3zWHOczhWcjTSgqycYAgwSlXvZltv65og==}
@@ -2386,6 +2416,8 @@ snapshots:
 
   chalk@5.3.0: {}
 
+  changesets@1.0.2: {}
+
   charenc@0.0.2: {}
 
   check-error@2.1.1: {}
@@ -2549,6 +2581,10 @@ snapshots:
   escape-string-regexp@1.0.5: {}
 
   escape-string-regexp@4.0.0: {}
+
+  eslint-config-prettier@9.1.0(eslint@9.6.0):
+    dependencies:
+      eslint: 9.6.0
 
   eslint-scope@8.0.1:
     dependencies:

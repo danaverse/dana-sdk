@@ -3,23 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "description": "Library for all dana protocols",
-  "main": "index.js",
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "pnpm clean && turbo build",
-    "clean": "rimraf packages/*/*/dist packages/*/dist",
-    "test": "turbo run test --no-cache",
-    "dev": "turbo dev",
-    "dev:packages": "pnpm preconstruct dev",
-    "lint": "turbo run lint --parallel",
-    "lint:fix": "turbo run lint:fix --parallel --no-cache"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+git@github.com:bcProFoundation/dana-sdk.git"
-  },
   "keywords": [
     "dana",
     "xec",
@@ -28,11 +11,37 @@
   "bugs": {
     "url": "https://github.com/bcProFoundation/dana-sdk/issues"
   },
-  "author": "vince.tran8x@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:bcProFoundation/dana-sdk.git"
+  },
   "license": "MIT",
+  "author": "vince.tran8x@gmail.com",
+  "main": "dist/index.js",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm clean && turbo build",
+    "clean": "rimraf packages/*/*/dist packages/*/dist",
+    "dev": "turbo dev",
+    "dev:packages": "pnpm preconstruct dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "lint": "turbo run lint --parallel",
+    "lint:fix": "turbo run lint:fix --parallel --no-cache",
+    "prepare": "husky",
+    "test": "turbo run test --no-cache"
+  },
   "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.7",
+    "chai": "^5.1.1",
+    "changesets": "^1.0.2",
     "eslint": "9.6.0",
+    "eslint-config-prettier": "^9.1.0",
     "husky": "^9.0.11",
+    "mocha": "^10.6.0",
+    "mocha-junit-reporter": "^2.2.1",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
     "prettier-plugin-packagejson": "2.5.0",
@@ -41,21 +50,21 @@
     "syncpack": "^12.3.2",
     "turbo": "^1.13.3"
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "react",
-        "react-native"
-      ],
-      "allowedVersions": {}
-    },
-    "overrides": {}
-  },
+  "packageManager": "pnpm@9.4.0",
   "engines": {
     "node": ">=18",
     "pnpm": ">=8"
   },
-  "packageManager": "pnpm@9.4.0",
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {},
+      "ignoreMissing": [
+        "react",
+        "react-native"
+      ]
+    },
+    "overrides": {}
+  },
   "preconstruct": {
     "packages": [
       "packages/client"
