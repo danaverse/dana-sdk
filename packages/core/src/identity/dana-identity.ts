@@ -17,6 +17,7 @@ export interface DanaId {
   namespace: string;
   name: string;
   type: DanaIdType;
+  authPubkey?: string;
 }
 
 /** Genesis info found in GENESIS txs of tokens */
