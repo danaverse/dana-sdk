@@ -12,6 +12,13 @@ export const DANA_ID_TYPE_PROFILE = 0;
 export const DANA_ID_TYPE_PAGE = 1;
 export type DanaIdType = typeof DANA_ID_TYPE_PROFILE | typeof DANA_ID_TYPE_PAGE;
 
+
+export interface DanaId {
+  namespace: string;
+  name: string;
+  type: DanaIdType;
+}
+
 /** Genesis info found in GENESIS txs of tokens */
 export interface GenesisInfo {
   /** name of the id */
@@ -24,9 +31,10 @@ export interface GenesisInfo {
   authPubkey?: string;
 }
 
+
 /**
  * Build an Id Handle GENESIS pushdata.
- * 
+ *
  * @param version - The version number of the identity.
  * @param genesisInfo - An object containing the genesis information.
  * @returns A Uint8Array representing the Id Handle GENESIS pushdata.
@@ -34,12 +42,12 @@ export interface GenesisInfo {
 export function idGenesis(version: number, genesisInfo: GenesisInfo): Uint8Array {
   // Verify the version number
   verifyVersion(version);
-  
+
   // Verify the type, namespace, and name in the genesisInfo object
   verifyType(genesisInfo.type);
   verifyNamespace(genesisInfo.namespace);
   verifyName(genesisInfo.name);
-  
+
   // Define a function to write the sections of the Id Handle GENESIS pushdata
   const writeSection = (writer: Writer) => {
     writer.putBytes(DANA_ID_LOKAD_ID);
@@ -54,18 +62,18 @@ export function idGenesis(version: number, genesisInfo: GenesisInfo): Uint8Array
   // Calculate the length of the writer
   const writerLength = new WriterLength();
   writeSection(writerLength);
-  
+
   // Create a new writer with the calculated length and write the sections
   const writerBytes = new WriterBytes(writerLength.length);
   writeSection(writerBytes);
-  
+
   // Return the data as a Uint8Array
   return writerBytes.data;
 }
 
 /**
  * Builds an Id Handle SEND pushdata section, moving the handle to different outputs.
- * 
+ *
  * @param {string} id - The identity string to be processed.
  * @returns {Uint8Array} - The constructed pushdata section as a Uint8Array.
  * @throws Will throw an error if the provided id does not pass the hash verification.

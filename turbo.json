@@ -7,6 +7,7 @@
       "cache": false
     },
     "test": {
+      "cache": false,
       "outputs": [],
       "inputs": ["src/**/*.tsx", "src/**/*.ts"]
     },

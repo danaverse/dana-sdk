@@ -19,7 +19,7 @@ declare module 'ecash-script' {
    * @returns {object} {data, pushedWith}
    * @throws {Error} if the stack does not start with a valid push.
    */
-  export function consumeNextPush(stack: Stack): { data: string, pushedWith: string };
+  export function consumeNextPush(stack: Stack): { data: string; pushedWith: string };
 
   /**
    * Convert an OP_RETURN outputScript into an array of pushes.
@@ -29,4 +29,3 @@ declare module 'ecash-script' {
    */
   export function getStackArray(outputScript: string): string[];
 }
-
