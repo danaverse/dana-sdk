@@ -1,4 +1,11 @@
-import { Writer, WriterBytes, WriterLength, fromHex, fromHexRev, strToBytes } from 'ecash-lib';
+import {
+  Writer,
+  WriterBytes,
+  WriterLength,
+  fromHex,
+  fromHexRev,
+  strToBytes
+} from 'ecash-lib';
 import { putVarBytes } from '../common';
 
 export const GENESIS = strToBytes('GENESIS');
@@ -10,8 +17,8 @@ export const DANA_ID_LOKAD_ID = strToBytes('DNID');
 
 export const DANA_ID_TYPE_PROFILE = 0;
 export const DANA_ID_TYPE_PAGE = 1;
+export const DANA_ID_TYPES = [DANA_ID_TYPE_PROFILE, DANA_ID_TYPE_PAGE];
 export type DanaIdType = typeof DANA_ID_TYPE_PROFILE | typeof DANA_ID_TYPE_PAGE;
-
 
 export interface DanaId {
   namespace: string;
@@ -32,7 +39,6 @@ export interface GenesisInfo {
   authPubkey?: string;
 }
 
-
 /**
  * Build an Id Handle GENESIS pushdata.
  *
@@ -40,7 +46,10 @@ export interface GenesisInfo {
  * @param genesisInfo - An object containing the genesis information.
  * @returns A Uint8Array representing the Id Handle GENESIS pushdata.
  */
-export function idGenesis(version: number, genesisInfo: GenesisInfo): Uint8Array {
+export function idGenesis(
+  version: number,
+  genesisInfo: GenesisInfo
+): Uint8Array {
   // Verify the version number
   verifyVersion(version);
 
@@ -84,8 +93,7 @@ export function idSend(id: string): Uint8Array {
   const idBytes = fromHexRev(id);
   const writeSection = (writer: Writer) => {
     writer.putBytes(DANA_ID_LOKAD_ID);
-    writer.putU8(SEND.length);
-    writer.putBytes(SEND);
+    putVarBytes(SEND, writer);
     writer.putBytes(idBytes);
   };
   const writerLength = new WriterLength();
@@ -106,8 +114,7 @@ export function idBurn(handleId: string): Uint8Array {
   const handleIdBytes = fromHexRev(handleId);
   const writeSection = (writer: Writer) => {
     writer.putBytes(DANA_ID_LOKAD_ID);
-    writer.putU8(BURN.length);
-    writer.putBytes(BURN);
+    putVarBytes(BURN, writer);
     writer.putBytes(handleIdBytes);
   };
   const writerLength = new WriterLength();

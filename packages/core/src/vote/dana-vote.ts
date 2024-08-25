@@ -1,4 +1,11 @@
-import { Amount, Writer, WriterBytes, WriterLength, fromHex, fromHexRev } from 'ecash-lib';
+import {
+  Amount,
+  Writer,
+  WriterBytes,
+  WriterLength,
+  fromHex,
+  fromHexRev
+} from 'ecash-lib';
 import { putVarBytes } from '../common';
 
 /** LOKAD ID for DANA Vote */
@@ -11,7 +18,17 @@ export const DANA_VOTE_TYPE_ID = 1;
 export const DANA_VOTE_TYPE_HASH = 2;
 
 export type DanaVoteDirection = typeof DANA_VOTE_UP | typeof DANA_VOTE_DOWN;
-export type DanaVoteForType = typeof DANA_VOTE_TYPE_ID | typeof DANA_VOTE_TYPE_HASH;
+export type DanaVoteForType =
+  | typeof DANA_VOTE_TYPE_ID
+  | typeof DANA_VOTE_TYPE_HASH;
+
+export interface DanaVote {
+  direction: DanaVoteDirection,
+  type: DanaVoteForType,
+  voteFor: string,
+  amount: string,
+  voteById?: string
+}
 
 export function danaVote(
   version: number,

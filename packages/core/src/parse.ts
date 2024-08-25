@@ -2,26 +2,16 @@ import BigNumber from 'bignumber.js';
 import { Tx } from 'chronik-client';
 import { consume, consumeNextPush } from 'ecash-script';
 import { opReturn } from './constants/op_return';
-import { bigNumberAmountToLocaleString, swapEndianness } from './utils';
 import { DANA_ID_TYPES, DanaId, DanaIdType } from './identity/dana-identity';
+import { swapEndianness } from './utils';
+import { DANA_VOTE_TYPE_HASH, DANA_VOTE_TYPE_ID, DanaVoteDirection, DanaVoteForType, DanaVote } from './vote/dana-vote';
+import { EmppParseSectionResult } from './empp';
 
 export function parseTx(tx: Tx) {
   /* Parse an lotus tx as returned by chronik for newsworthy information
    * returns
    * { txid, genesisInfo, opReturnInfo }
    */
-
-  const { txid, inputs, outputs } = tx;
-
-  let isTokenTx = false;
-  let genesisInfo = false;
-  let opReturnInfo = false;
-
-  let tokenSendInfo = false;
-  let tokenSendingOutputScripts = new Set();
-  let tokenReceivingOutputs = new Map();
-  let tokenChangeOutputs = new Map();
-  let undecimalizedTokenInputAmount = new BigNumber(0);
 }
 
 export function parseOpReturn(opReturnHex: string) {
@@ -66,7 +56,6 @@ export function parseOpReturn(opReturnHex: string) {
   }
 
   return { app };
-
 }
 
 /**
@@ -75,46 +64,35 @@ export function parseOpReturn(opReturnHex: string) {
  * @returns {object} {app, msg} used to compose a useful telegram msg describing the transaction
  */
 export function parseMultipushStack(emppStackArray: string[]) {
-
   // Parsing empp txs will require specific rules depending on the type of tx
   let msgs = [];
 
   // Start at i=1 because emppStackArray[0] is OP_RESERVED
   for (let i = 1; i < emppStackArray.length; i += 1) {
-    if (
-      emppStackArray[i].slice(0, 8) === opReturn.knownApps.danaId.prefix
-    ) {
-      const thisMsg = parseDanaId(
-        emppStackArray[i].slice(8),
-      );
+    if (emppStackArray[i].slice(0, 8) === opReturn.knownApps.danaId.prefix) {
+      const thisMsg = parseDanaIdSection(emppStackArray[i].slice(8));
       msgs.push(`${opReturn.knownApps.danaId.app}:${thisMsg}`);
     } else if (
       emppStackArray[i].slice(0, 8) === opReturn.knownApps.danaVote.prefix
     ) {
-      const thisMsg = parseDanaId(
-        emppStackArray[i].slice(8),
-      );
+      const thisMsg = parseDanaVoteSection(emppStackArray[i].slice(8));
       msgs.push(`${opReturn.knownApps.danaVote.app}:${thisMsg}`);
     } else {
       // Since we don't know any spec or parsing rules for other types of EMPP pushes,
       // Just add an ASCII decode of the whole thing if you see one
       msgs.push(
-        `${'Unknown App:'}${Buffer.from(
-          emppStackArray[i],
-          'hex',
-        ).toString('ascii')}`,
+        `${'Unknown App:'}${Buffer.from(emppStackArray[i], 'hex').toString('ascii')}`
       );
     }
   }
 }
 
-
 /**
-* Parse dana identity
+ * Parse dana identity empp section
  * @param {string} danaIdPush a string of hex characters in an empp tx representing an danaId push
  * @returns {DanaId} The dana identity object
  */
-export function parseDanaId(danaIdPush: string): DanaId {
+export function parseDanaIdSection(danaIdPush: string): EmppParseSectionResult | undefined {
   let stack = { remainingHex: danaIdPush };
 
   // Read the version byte
@@ -128,7 +106,7 @@ export function parseDanaId(danaIdPush: string): DanaId {
 
   const sectionType = Buffer.from(
     consume(stack, sectionBytesLength),
-    'hex',
+    'hex'
   ).toString('utf8');
 
   const DANA_ID_BYTES_LENGTH = 32;
@@ -137,12 +115,12 @@ export function parseDanaId(danaIdPush: string): DanaId {
   switch (sectionType) {
     case 'GENESIS': {
       // Parse the section 'GENESIS'
-      const type  = parseInt(consume(stack, 1), 16);
+      const type = parseInt(consume(stack, 1), 16);
       // check type is in DANA_ID_TYPES
       if (!DANA_ID_TYPES.includes(type)) {
         throw 'Invalid type';
       }
-      const danaType = type as DanaIdType;
+      const danaIdType = type as DanaIdType;
 
       const namespaceBytesLength = parseInt(consume(stack, 1), 16);
       if (namespaceBytesLength <= 0 || namespaceBytesLength > 15) {
@@ -150,41 +128,106 @@ export function parseDanaId(danaIdPush: string): DanaId {
       }
       const namespace = Buffer.from(
         consume(stack, namespaceBytesLength),
-        'hex',
+        'hex'
       ).toString('utf8');
 
       const nameBytesLength = parseInt(consume(stack, 1), 16);
       if (nameBytesLength <= 0 || nameBytesLength > 21) {
         throw 'Invalid namespace';
       }
-      const name = Buffer.from(
-        consume(stack, nameBytesLength),
-        'hex',
-      ).toString('utf8');
+      const name = Buffer.from(consume(stack, nameBytesLength), 'hex').toString(
+        'utf8'
+      );
 
       const authPubkeyBytesLength = parseInt(consume(stack, 1), 16);
-      const authPubkey = authPubkeyBytesLength > 0 ? Buffer.from(
-        consume(stack, nameBytesLength),
-        'hex',
-      ).toString('utf8') : '';
+      const authPubkey =
+        authPubkeyBytesLength > 0
+          ? Buffer.from(consume(stack, nameBytesLength), 'hex').toString('utf8')
+          : '';
 
       const danaId: DanaId = {
         namespace,
         name,
         authPubkey,
-        type: danaType
+        type: danaIdType
       };
 
-      return danaId;
+      return {
+        app: opReturn.knownApps.danaId.app,
+        subType: opReturn.knownApps.danaId.subTypes.genesis,
+        data: danaId
+      }
     }
     case 'SEND': {
       // Parse the section 'SEND'
+      const handleId = swapEndianness(consume(stack, DANA_ID_BYTES_LENGTH));
+      return {
+        app: opReturn.knownApps.danaId.app,
+        subType: opReturn.knownApps.danaId.subTypes.send,
+        data: handleId
+      };
+    }
+    case 'BURN': {
+      // Parse the section 'SEND'
+      const handleId = swapEndianness(consume(stack, DANA_ID_BYTES_LENGTH));
+      return {
+        app: opReturn.knownApps.danaId.app,
+        subType: opReturn.knownApps.danaId.subTypes.burn,
+        data: handleId
+      };
     }
   }
-
 }
 
-export function parseDanaVote(danaVotePush: string) {
-  // TODO
-}
+export function parseDanaVoteSection(danaVotePush: string): EmppParseSectionResult | undefined {
+  let stack = { remainingHex: danaVotePush };
 
+  // Read the version byte
+  const version = consume(stack, 1);
+
+  if (version !== '00') {
+    throw 'Unsupported version';
+  }
+
+  // Read the direction byte
+  const direction: DanaVoteDirection = parseInt(consume(stack, 1), 16) ? 1 : 0;
+
+  // Read the voteById if present
+  let voteById = undefined;
+  const voteByIdLength = parseInt(consume(stack, 1), 16);
+  if ((voteByIdLength !== 0) && (voteByIdLength !== 32)) {
+    throw 'Unsupported vote by';
+  }
+  voteById = voteByIdLength === 32 ? swapEndianness(consume(stack, 32)): '';
+
+  // Read the type byte
+  const danaVoteForType: DanaVoteForType = parseInt(consume(stack, 1), 16) as DanaVoteForType;
+
+  // Read the voteFor
+  let voteFor;
+  if (danaVoteForType === DANA_VOTE_TYPE_ID) {
+    voteFor = swapEndianness(consume(stack, 32)); // Assuming 32 bytes for ID
+  } else if (danaVoteForType === DANA_VOTE_TYPE_HASH) {
+    voteFor = swapEndianness(consume(stack, 32)); // Assuming 32 bytes for hash
+  } else {
+    throw 'Unsupported dana vote type';
+  }
+
+  // Read the amount, which is 6 bytes
+  const amountHex = consume(stack, 6);
+  const amount = BigInt(`0x${amountHex}`);
+
+  const danaVote: DanaVote = {
+      direction,
+      type: danaVoteForType,
+      voteFor,
+      amount: amount.toString(),
+      voteById
+  };
+
+  return {
+    app: opReturn.knownApps.danaVote.app,
+    subType: opReturn.knownApps.danaId.subTypes.burn,
+    data: danaVote
+  };
+}

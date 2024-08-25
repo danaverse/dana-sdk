@@ -1,5 +1,3 @@
-
-
 'use strict';
 
 /**
@@ -22,14 +20,14 @@ export function swapEndianness(hexString: string): string {
 
   if (hexString.length % byteLength === 1) {
     throw new Error(
-      `Invalid input length ${hexString.length}: hexString must be divisible by bytes, i.e. have an even length.`,
+      `Invalid input length ${hexString.length}: hexString must be divisible by bytes, i.e. have an even length.`
     );
   }
 
   // Throw an error if input contains non-hex characters
   if (!isHexString(hexString)) {
     throw new Error(
-      `Invalid input. ${hexString} contains non-hexadecimal characters.`,
+      `Invalid input. ${hexString} contains non-hexadecimal characters.`
     );
   }
 
@@ -53,12 +51,14 @@ export function swapEndianness(hexString: string): string {
  * @param {number} decimals the number of expected decimal places, e.g. 2
  * @returns {string} e.g. 1,000,000.12
  */
-export function bigNumberAmountToLocaleString(bnString: string, decimals: number): string {
+export function bigNumberAmountToLocaleString(
+  bnString: string,
+  decimals: number
+): string {
   const totalLength = bnString.length;
 
   // Get the values that come after the decimal place
-  const decimalValues =
-    decimals === 0 ? '' : bnString.slice(-1 * decimals);
+  const decimalValues = decimals === 0 ? '' : bnString.slice(-1 * decimals);
   const decimalLength = decimalValues.length;
 
   // Get the values that come before the decimal place
@@ -66,7 +66,6 @@ export function bigNumberAmountToLocaleString(bnString: string, decimals: number
 
   // Use toLocaleString() to format the amount before the decimal place with commas
   return `${BigInt(intValue).toLocaleString('en-US', {
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 0
   })}${decimals !== 0 ? `.${decimalValues}` : ''}`;
 }
-

@@ -19,7 +19,14 @@ describe('Dana Vote', () => {
       const amount = 1000000n; // 0.01 BCH
       const voteById = 'fedcba9876543210fedcba987654321';
 
-      const result = danaVote(version, direction, type, voteFor, amount, voteById);
+      const result = danaVote(
+        version,
+        direction,
+        type,
+        voteFor,
+        amount,
+        voteById
+      );
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_VOTE_LOKAD_ID);
       expect(result[4]).to.equal(version);
@@ -28,7 +35,9 @@ describe('Dana Vote', () => {
       expect(result.slice(7, 39)).to.deep.equal(fromHexRev(voteById));
       expect(result[39]).to.equal(type);
       expect(result.slice(40, 72)).to.deep.equal(fromHexRev(voteFor));
-      expect(result.slice(72)).to.deep.equal(new Uint8Array([0x40, 0x42, 0x0f, 0x00, 0x00, 0x00])); // 1000000 in little-endian
+      expect(result.slice(72)).to.deep.equal(
+        new Uint8Array([0x40, 0x42, 0x0f, 0x00, 0x00, 0x00])
+      ); // 1000000 in little-endian
     });
 
     it('should create correct vote data for downvote with hash', () => {
@@ -39,7 +48,14 @@ describe('Dana Vote', () => {
       const amount = 500000n; // 0.005 BCH
       const voteById = 'fedcba9876543210fedcba987654321';
 
-      const result = danaVote(version, direction, type, voteFor, amount, voteById);
+      const result = danaVote(
+        version,
+        direction,
+        type,
+        voteFor,
+        amount,
+        voteById
+      );
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_VOTE_LOKAD_ID);
       expect(result[4]).to.equal(version);
@@ -48,7 +64,9 @@ describe('Dana Vote', () => {
       expect(result.slice(7, 39)).to.deep.equal(fromHexRev(voteById));
       expect(result[39]).to.equal(type);
       expect(result.slice(40, 72)).to.deep.equal(fromHexRev(voteFor));
-      expect(result.slice(72)).to.deep.equal(new Uint8Array([0xa0, 0x21, 0x07, 0x00, 0x00, 0x00])); // 500000 in little-endian
+      expect(result.slice(72)).to.deep.equal(
+        new Uint8Array([0xa0, 0x21, 0x07, 0x00, 0x00, 0x00])
+      ); // 500000 in little-endian
     });
 
     it('should create correct vote data without voteById', () => {
@@ -66,7 +84,9 @@ describe('Dana Vote', () => {
       expect(result[6]).to.equal(0); // length of voteById (empty)
       expect(result[7]).to.equal(type);
       expect(result.slice(8, 40)).to.deep.equal(fromHexRev(voteFor));
-      expect(result.slice(40)).to.deep.equal(new Uint8Array([0x40, 0x42, 0x0f, 0x00, 0x00, 0x00])); // 1000000 in little-endian
+      expect(result.slice(40)).to.deep.equal(
+        new Uint8Array([0x40, 0x42, 0x0f, 0x00, 0x00, 0x00])
+      ); // 1000000 in little-endian
     });
 
     it('should handle large amounts correctly', () => {
@@ -77,9 +97,18 @@ describe('Dana Vote', () => {
       const amount = 18446744073709551615n; // Max uint64 value
       const voteById = 'fedcba9876543210fedcba987654321';
 
-      const result = danaVote(version, direction, type, voteFor, amount, voteById);
+      const result = danaVote(
+        version,
+        direction,
+        type,
+        voteFor,
+        amount,
+        voteById
+      );
 
-      expect(result.slice(72)).to.deep.equal(new Uint8Array([0xff, 0xff, 0xff, 0xff, 0xff, 0xff])); // Max value in little-endian
+      expect(result.slice(72)).to.deep.equal(
+        new Uint8Array([0xff, 0xff, 0xff, 0xff, 0xff, 0xff])
+      ); // Max value in little-endian
     });
 
     it('should throw error for invalid voteFor length', () => {
@@ -89,7 +118,9 @@ describe('Dana Vote', () => {
       const voteFor = '0123456789abcdef'; // Too short
       const amount = 1000000n;
 
-      expect(() => danaVote(version, direction, type, voteFor, amount)).to.throw('Invalid voteFor length');
+      expect(() =>
+        danaVote(version, direction, type, voteFor, amount)
+      ).to.throw('Invalid voteFor length');
     });
 
     it('should throw error for invalid voteById length when provided', () => {
@@ -100,7 +131,9 @@ describe('Dana Vote', () => {
       const amount = 1000000n;
       const voteById = '123456789abcdef'; // Too short
 
-      expect(() => danaVote(version, direction, type, voteFor, amount, voteById)).to.throw('Invalid voteById length');
+      expect(() =>
+        danaVote(version, direction, type, voteFor, amount, voteById)
+      ).to.throw('Invalid voteById length');
     });
   });
 });
