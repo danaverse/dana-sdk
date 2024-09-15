@@ -22,17 +22,17 @@ describe('Dana Identity', () => {
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
       expect(result[4]).to.equal(1); // version
-      expect(result.slice(5, 12)).to.deep.equal(
+      expect(result.slice(5, 13)).to.deep.equal(
         new Uint8Array([7, 71, 69, 78, 69, 83, 73, 83])
       ); // GENESIS
-      expect(result[12]).to.equal(DANA_ID_TYPE_PROFILE);
-      expect(result.slice(13, 18)).to.deep.equal(
+      expect(result[13]).to.equal(DANA_ID_TYPE_PROFILE);
+      expect(result.slice(14, 19)).to.deep.equal(
         new Uint8Array([4, 108, 105, 120, 105])
       ); // 'lixi'
-      expect(result.slice(18, 26)).to.deep.equal(
+      expect(result.slice(19, 27)).to.deep.equal(
         new Uint8Array([7, 116, 101, 115, 116, 45, 105, 100])
       ); // 'test-id'
-      expect(result.slice(26)).to.deep.equal(new Uint8Array([2, 3, 4, 5, 6])); // authPubkey
+      expect(result.slice(27)).to.deep.equal(new Uint8Array([4, 3, 4, 5, 6])); // authPubkey
     });
 
     it('should throw error for invalid version', () => {
@@ -80,7 +80,7 @@ describe('Dana Identity', () => {
 
   describe('idSend', () => {
     it('should create correct send data', () => {
-      const id = '0123456789abcdef0123456789abcdef';
+      const id = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const result = idSend(id);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
@@ -98,7 +98,7 @@ describe('Dana Identity', () => {
 
   describe('idBurn', () => {
     it('should create correct burn data', () => {
-      const handleId = '0123456789abcdef0123456789abcdef';
+      const handleId = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const result = idBurn(handleId);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
