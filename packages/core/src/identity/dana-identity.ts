@@ -42,7 +42,7 @@ export interface GenesisInfo {
 /**
  * Build an Id Handle GENESIS pushdata.
  *
- * @param version - The version number of the identity.
+ * @param version - The version number of the identity protocol.
  * @param genesisInfo - An object containing the genesis information.
  * @returns A Uint8Array representing the Id Handle GENESIS pushdata.
  */
@@ -85,16 +85,21 @@ export function idGenesis(
  * Builds an Id Handle SEND pushdata section, moving the handle to different outputs.
  *
  * @param {string} id - The identity string to be processed.
+ * @param {number} version - The version number of the identity protocol.
+ * @param {number} outputNum - The output number to move the handle to.
  * @returns {Uint8Array} - The constructed pushdata section as a Uint8Array.
  * @throws Will throw an error if the provided id does not pass the hash verification.
  */
-export function idSend(id: string): Uint8Array {
+export function idSend(id: string, version: number, outputNum: number): Uint8Array {
+  verifyVersion(version);
   verifyHash(id);
   const idBytes = fromHexRev(id);
   const writeSection = (writer: Writer) => {
     writer.putBytes(DANA_ID_LOKAD_ID);
-    writer.putBytes(SEND);
+    writer.putU8(version);
+    putVarBytes(SEND, writer);
     writer.putBytes(idBytes);
+    writer.putU8(outputNum);
   };
   const writerLength = new WriterLength();
   writeSection(writerLength);
@@ -104,17 +109,20 @@ export function idSend(id: string): Uint8Array {
 }
 
 /**
- * Builds a Burn Handle BURN pushdata section, intentionally burning the handle.
+ * Builds a Burn Handle BURN pushdata section, intentionally destroying the handle.
  *
  * @param {string} handleId - The handle ID to be burned.
+ * @param {number} version - The version number of the identity protocol.
  * @returns {Uint8Array} - The byte array representing the BURN pushdata section.
  */
-export function idBurn(handleId: string): Uint8Array {
+export function idBurn(handleId: string, version: number): Uint8Array {
+  verifyVersion(version);
   verifyHash(handleId);
   const handleIdBytes = fromHexRev(handleId);
   const writeSection = (writer: Writer) => {
     writer.putBytes(DANA_ID_LOKAD_ID);
-    writer.putBytes(BURN);
+    writer.putU8(version);
+    putVarBytes(BURN, writer);
     writer.putBytes(handleIdBytes);
   };
   const writerLength = new WriterLength();

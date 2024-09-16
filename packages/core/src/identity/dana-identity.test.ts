@@ -18,10 +18,10 @@ describe('Dana Identity', () => {
         namespace: 'lixi',
         authPubkey: '03040506'
       };
-      const result = idGenesis(1, genesisInfo);
+      const result = idGenesis(0, genesisInfo);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
-      expect(result[4]).to.equal(1); // version
+      expect(result[4]).to.equal(0); // version
       expect(result.slice(5, 13)).to.deep.equal(
         new Uint8Array([7, 71, 69, 78, 69, 83, 73, 83])
       ); // GENESIS
@@ -81,36 +81,39 @@ describe('Dana Identity', () => {
   describe('idSend', () => {
     test('should create correct send data', () => {
       const id = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
-      const result = idSend(id);
+      const result = idSend(id, 0, 1);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
-      expect(result.slice(4, 8)).to.deep.equal(
-        new Uint8Array([83, 69, 78, 68])
+      expect(result[4]).to.equal(0); // version
+      expect(result.slice(5, 10)).to.deep.equal(
+        new Uint8Array([4, 83, 69, 78, 68])
       ); // SEND
-      expect(result.slice(8)).to.deep.equal(fromHexRev(id));
+      expect(result.slice(10, 42)).to.deep.equal(fromHexRev(id));
+      expect(result[42]).to.equal(1); // version
     });
 
     test('should throw error for invalid id', () => {
       const invalidId = '0123456789abcdef'; // Too short
-      expect(() => idSend(invalidId)).to.throw('Hash invalid');
+      expect(() => idSend(invalidId, 0, 1)).to.throw('Hash invalid');
     });
   });
 
   describe('idBurn', () => {
     test('should create correct burn data', () => {
       const handleId = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
-      const result = idBurn(handleId);
+      const result = idBurn(handleId, 0);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
-      expect(result.slice(4, 8)).to.deep.equal(
-        new Uint8Array([66, 85, 82, 78])
+      expect(result[4]).to.equal(0); // version
+      expect(result.slice(5, 10)).to.deep.equal(
+        new Uint8Array([4, 66, 85, 82, 78])
       ); // BURN
-      expect(result.slice(8)).to.deep.equal(fromHexRev(handleId));
+      expect(result.slice(10)).to.deep.equal(fromHexRev(handleId));
     });
 
     test('should throw error for invalid handleId', () => {
       const invalidHandleId = '0123456789abcdef'; // Too short
-      expect(() => idBurn(invalidHandleId)).to.throw('Hash invalid');
+      expect(() => idBurn(invalidHandleId, 0)).to.throw('Hash invalid');
     });
   });
 });
