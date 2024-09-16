@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { test, describe, expect } from 'vitest';
 import { fromHexRev } from 'ecash-lib';
 import {
   DANA_ID_LOKAD_ID,
@@ -11,7 +11,7 @@ import {
 
 describe('Dana Identity', () => {
   describe('idGenesis', () => {
-    it('should create correct genesis profile data', () => {
+    test('should create correct genesis profile data', () => {
       const genesisInfo: GenesisInfo = {
         name: 'test-id',
         type: DANA_ID_TYPE_PROFILE,
@@ -35,7 +35,7 @@ describe('Dana Identity', () => {
       expect(result.slice(27)).to.deep.equal(new Uint8Array([4, 3, 4, 5, 6])); // authPubkey
     });
 
-    it('should throw error for invalid version', () => {
+    test('should throw error for invalid version', () => {
       const genesisInfo: GenesisInfo = {
         name: 'test-id',
         type: DANA_ID_TYPE_PROFILE,
@@ -46,7 +46,7 @@ describe('Dana Identity', () => {
       );
     });
 
-    it('should throw error for invalid type', () => {
+    test('should throw error for invalid type', () => {
       const genesisInfo: GenesisInfo = {
         name: 'test-id',
         type: 2 as any, // Invalid type
@@ -55,7 +55,7 @@ describe('Dana Identity', () => {
       expect(() => idGenesis(1, genesisInfo)).to.throw('Unsupported type 2');
     });
 
-    it('should throw error for invalid namespace', () => {
+    test('should throw error for invalid namespace', () => {
       const genesisInfo: GenesisInfo = {
         name: 'test-id',
         type: DANA_ID_TYPE_PROFILE,
@@ -66,7 +66,7 @@ describe('Dana Identity', () => {
       );
     });
 
-    it('should throw error for invalid name', () => {
+    test('should throw error for invalid name', () => {
       const genesisInfo: GenesisInfo = {
         name: 'a'.repeat(33), // 33 characters, which is too long
         type: DANA_ID_TYPE_PROFILE,
@@ -79,36 +79,36 @@ describe('Dana Identity', () => {
   });
 
   describe('idSend', () => {
-    it('should create correct send data', () => {
+    test('should create correct send data', () => {
       const id = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const result = idSend(id);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
-      expect(result.slice(4, 9)).to.deep.equal(
-        new Uint8Array([4, 83, 69, 78, 68])
+      expect(result.slice(4, 8)).to.deep.equal(
+        new Uint8Array([83, 69, 78, 68])
       ); // SEND
-      expect(result.slice(9)).to.deep.equal(fromHexRev(id));
+      expect(result.slice(8)).to.deep.equal(fromHexRev(id));
     });
 
-    it('should throw error for invalid id', () => {
+    test('should throw error for invalid id', () => {
       const invalidId = '0123456789abcdef'; // Too short
       expect(() => idSend(invalidId)).to.throw('Hash invalid');
     });
   });
 
   describe('idBurn', () => {
-    it('should create correct burn data', () => {
+    test('should create correct burn data', () => {
       const handleId = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const result = idBurn(handleId);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
-      expect(result.slice(4, 9)).to.deep.equal(
-        new Uint8Array([4, 66, 85, 82, 78])
+      expect(result.slice(4, 8)).to.deep.equal(
+        new Uint8Array([66, 85, 82, 78])
       ); // BURN
-      expect(result.slice(9)).to.deep.equal(fromHexRev(handleId));
+      expect(result.slice(8)).to.deep.equal(fromHexRev(handleId));
     });
 
-    it('should throw error for invalid handleId', () => {
+    test('should throw error for invalid handleId', () => {
       const invalidHandleId = '0123456789abcdef'; // Too short
       expect(() => idBurn(invalidHandleId)).to.throw('Hash invalid');
     });

@@ -4,12 +4,13 @@ import {
   WriterBytes,
   WriterLength,
   fromHex,
-  fromHexRev
+  fromHexRev,
+  strToBytes
 } from 'ecash-lib';
 import { putVarBytes } from '../common';
 
 /** LOKAD ID for DANA Vote */
-export const DANA_VOTE_LOKAD_ID = fromHex('DNVT');
+export const DANA_VOTE_LOKAD_ID = strToBytes('DNVT');
 
 export const DANA_VOTE_UP = 1;
 export const DANA_VOTE_DOWN = 0;
@@ -39,13 +40,14 @@ export function danaVote(
   voteById?: string
 ): Uint8Array {
   const writeSection = (writer: Writer) => {
+    verifyVoteFor(voteFor);
+    verifyVoteById(voteById);
     writer.putBytes(DANA_VOTE_LOKAD_ID);
     writer.putU8(version);
     writer.putU8(direction);
+    writer.putU8(type);
     const voteByIdBytes = fromHexRev(voteById ?? '');
     putVarBytes(voteByIdBytes, writer);
-    writer.putBytes(voteByIdBytes);
-    writer.putU8(type);
     const voteForBytes = fromHexRev(voteFor);
     writer.putBytes(voteForBytes);
 
@@ -60,3 +62,18 @@ export function danaVote(
   writeSection(writerBytes);
   return writerBytes.data;
 }
+
+function verifyVoteById(voteById?: string) {
+  // voteById can be empty or null/undefined
+  // if voteById is not empty then it must be a 64 character hex string
+  if (voteById && voteById.length !== 64) {
+    throw new Error(`Invalid voteById length: ${voteById}`);
+  }
+}
+
+function verifyVoteFor(voteFor: string) {
+  if (!voteFor || (voteFor && voteFor.length !== 64)) {
+    throw new Error(`Invalid voteFor length: ${voteFor}`);
+  }
+}
+

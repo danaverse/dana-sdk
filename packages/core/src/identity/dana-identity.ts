@@ -93,7 +93,7 @@ export function idSend(id: string): Uint8Array {
   const idBytes = fromHexRev(id);
   const writeSection = (writer: Writer) => {
     writer.putBytes(DANA_ID_LOKAD_ID);
-    putVarBytes(SEND, writer);
+    writer.putBytes(SEND);
     writer.putBytes(idBytes);
   };
   const writerLength = new WriterLength();
@@ -114,7 +114,7 @@ export function idBurn(handleId: string): Uint8Array {
   const handleIdBytes = fromHexRev(handleId);
   const writeSection = (writer: Writer) => {
     writer.putBytes(DANA_ID_LOKAD_ID);
-    putVarBytes(BURN, writer);
+    writer.putBytes(BURN);
     writer.putBytes(handleIdBytes);
   };
   const writerLength = new WriterLength();
