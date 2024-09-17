@@ -3,7 +3,6 @@ import {
   Writer,
   WriterBytes,
   WriterLength,
-  fromHex,
   fromHexRev,
   strToBytes
 } from 'ecash-lib';
@@ -24,11 +23,11 @@ export type DanaVoteForType =
   | typeof DANA_VOTE_TYPE_HASH;
 
 export interface DanaVote {
-  direction: DanaVoteDirection,
-  type: DanaVoteForType,
-  voteFor: string,
-  amount: string,
-  voteById?: string
+  direction: DanaVoteDirection;
+  type: DanaVoteForType;
+  voteFor: string;
+  amount: string;
+  voteById?: string;
 }
 
 export function danaVote(
@@ -76,4 +75,3 @@ function verifyVoteFor(voteFor: string) {
     throw new Error(`Invalid voteFor length: ${voteFor}`);
   }
 }
-

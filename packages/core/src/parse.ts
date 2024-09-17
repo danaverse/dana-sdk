@@ -1,11 +1,16 @@
-import BigNumber from 'bignumber.js';
 import { Tx } from 'chronik-client';
 import { consume, consumeNextPush } from 'ecash-script';
 import { opReturn } from './constants/op_return';
+import { EmppParseSectionResult } from './empp';
 import { DANA_ID_TYPES, DanaId, DanaIdType } from './identity/dana-identity';
 import { swapEndianness } from './utils';
-import { DANA_VOTE_TYPE_HASH, DANA_VOTE_TYPE_ID, DanaVoteDirection, DanaVoteForType, DanaVote } from './vote/dana-vote';
-import { EmppParseSectionResult } from './empp';
+import {
+  DANA_VOTE_TYPE_HASH,
+  DANA_VOTE_TYPE_ID,
+  DanaVote,
+  DanaVoteDirection,
+  DanaVoteForType
+} from './vote/dana-vote';
 
 export function parseTx(tx: Tx) {
   /* Parse an lotus tx as returned by chronik for newsworthy information
@@ -92,7 +97,9 @@ export function parseMultipushStack(emppStackArray: string[]) {
  * @param {string} danaIdPush a string of hex characters in an empp tx representing an danaId push
  * @returns {DanaId} The dana identity object
  */
-export function parseDanaIdSection(danaIdPush: string): EmppParseSectionResult | undefined {
+export function parseDanaIdSection(
+  danaIdPush: string
+): EmppParseSectionResult | undefined {
   let stack = { remainingHex: danaIdPush };
 
   // Read the version byte
@@ -156,7 +163,7 @@ export function parseDanaIdSection(danaIdPush: string): EmppParseSectionResult |
         app: opReturn.knownApps.danaId.app,
         subType: opReturn.knownApps.danaId.subTypes.genesis,
         data: danaId
-      }
+      };
     }
     case 'SEND': {
       // Parse the section 'SEND'
@@ -179,7 +186,9 @@ export function parseDanaIdSection(danaIdPush: string): EmppParseSectionResult |
   }
 }
 
-export function parseDanaVoteSection(danaVotePush: string): EmppParseSectionResult | undefined {
+export function parseDanaVoteSection(
+  danaVotePush: string
+): EmppParseSectionResult | undefined {
   let stack = { remainingHex: danaVotePush };
 
   // Read the version byte
@@ -195,13 +204,16 @@ export function parseDanaVoteSection(danaVotePush: string): EmppParseSectionResu
   // Read the voteById if present
   let voteById = undefined;
   const voteByIdLength = parseInt(consume(stack, 1), 16);
-  if ((voteByIdLength !== 0) && (voteByIdLength !== 32)) {
+  if (voteByIdLength !== 0 && voteByIdLength !== 32) {
     throw 'Unsupported vote by';
   }
-  voteById = voteByIdLength === 32 ? swapEndianness(consume(stack, 32)): '';
+  voteById = voteByIdLength === 32 ? swapEndianness(consume(stack, 32)) : '';
 
   // Read the type byte
-  const danaVoteForType: DanaVoteForType = parseInt(consume(stack, 1), 16) as DanaVoteForType;
+  const danaVoteForType: DanaVoteForType = parseInt(
+    consume(stack, 1),
+    16
+  ) as DanaVoteForType;
 
   // Read the voteFor
   let voteFor;
@@ -218,11 +230,11 @@ export function parseDanaVoteSection(danaVotePush: string): EmppParseSectionResu
   const amount = BigInt(`0x${amountHex}`);
 
   const danaVote: DanaVote = {
-      direction,
-      type: danaVoteForType,
-      voteFor,
-      amount: amount.toString(),
-      voteById
+    direction,
+    type: danaVoteForType,
+    voteFor,
+    amount: amount.toString(),
+    voteById
   };
 
   return {

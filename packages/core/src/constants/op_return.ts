@@ -8,7 +8,9 @@ export const opReturn = {
   knownApps: {
     alp: { prefix: '534c5032', app: 'ALP' },
     danaId: {
-      prefix: '444e4944', app: 'DanaId', subTypes: {
+      prefix: '444e4944',
+      app: 'DanaId',
+      subTypes: {
         genesis: 'genesis',
         send: 'send',
         burn: 'burn'

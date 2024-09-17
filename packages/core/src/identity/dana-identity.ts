@@ -90,7 +90,11 @@ export function idGenesis(
  * @returns {Uint8Array} - The constructed pushdata section as a Uint8Array.
  * @throws Will throw an error if the provided id does not pass the hash verification.
  */
-export function idSend(id: string, version: number, outputNum: number): Uint8Array {
+export function idSend(
+  id: string,
+  version: number,
+  outputNum: number
+): Uint8Array {
   verifyVersion(version);
   verifyHash(id);
   const idBytes = fromHexRev(id);

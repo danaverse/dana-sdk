@@ -1,5 +1,5 @@
-import { expect, describe, test } from 'vitest';
-import { fromHex, fromHexRev } from 'ecash-lib';
+import { fromHexRev } from 'ecash-lib';
+import { describe, expect, test } from 'vitest';
 import {
   DANA_VOTE_DOWN,
   DANA_VOTE_LOKAD_ID,
@@ -15,9 +15,11 @@ describe('Dana Vote', () => {
       const version = 1;
       const direction = DANA_VOTE_UP;
       const type = DANA_VOTE_TYPE_ID;
-      const voteFor = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
+      const voteFor =
+        'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const amount = 1000000n; // 1 XPI
-      const voteById = 'ccc4daf4557a2294efe233c95412f4dbf4dc1068cbc0477b634e4451b0cf6fc5';
+      const voteById =
+        'ccc4daf4557a2294efe233c95412f4dbf4dc1068cbc0477b634e4451b0cf6fc5';
 
       const result = danaVote(
         version,
@@ -44,9 +46,11 @@ describe('Dana Vote', () => {
       const version = 1;
       const direction = DANA_VOTE_DOWN;
       const type = DANA_VOTE_TYPE_HASH;
-      const voteFor = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
+      const voteFor =
+        'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const amount = 500000n; // 0.005 BCH
-      const voteById = 'ccc4daf4557a2294efe233c95412f4dbf4dc1068cbc0477b634e4451b0cf6fc5';
+      const voteById =
+        'ccc4daf4557a2294efe233c95412f4dbf4dc1068cbc0477b634e4451b0cf6fc5';
 
       const result = danaVote(
         version,
@@ -73,7 +77,8 @@ describe('Dana Vote', () => {
       const version = 1;
       const direction = DANA_VOTE_UP;
       const type = DANA_VOTE_TYPE_ID;
-      const voteFor = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
+      const voteFor =
+        'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const amount = 1000000n; // 0.01 BCH
 
       const result = danaVote(version, direction, type, voteFor, amount);
@@ -93,9 +98,11 @@ describe('Dana Vote', () => {
       const version = 1;
       const direction = DANA_VOTE_UP;
       const type = DANA_VOTE_TYPE_ID;
-      const voteFor = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
+      const voteFor =
+        'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const amount = 281474976710655n; // Max uint64 value
-      const voteById = 'ccc4daf4557a2294efe233c95412f4dbf4dc1068cbc0477b634e4451b0cf6fc5';
+      const voteById =
+        'ccc4daf4557a2294efe233c95412f4dbf4dc1068cbc0477b634e4451b0cf6fc5';
 
       const result = danaVote(
         version,
@@ -127,7 +134,8 @@ describe('Dana Vote', () => {
       const version = 1;
       const direction = DANA_VOTE_UP;
       const type = DANA_VOTE_TYPE_ID;
-      const voteFor = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
+      const voteFor =
+        'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const amount = 1000000n;
       const voteById = '123456789abcdef'; // Too short
 

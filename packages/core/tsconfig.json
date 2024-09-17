@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
+    "moduleResolution": "Bundler",
     /* Language and Environment */
     "target": "es2020",
     /* ES2020 for bigint, DOM for WebAssemby */
     "lib": ["ES2020", "DOM"],
     /* Modules */
-    "module": "CommonJS",
+    "module": "ES2015",
     /* Emit */
     "noEmit": true,
     /* Interop Constraints */

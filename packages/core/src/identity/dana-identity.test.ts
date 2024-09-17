@@ -1,5 +1,5 @@
-import { test, describe, expect } from 'vitest';
 import { fromHexRev } from 'ecash-lib';
+import { describe, expect, test } from 'vitest';
 import {
   DANA_ID_LOKAD_ID,
   DANA_ID_TYPE_PROFILE,
@@ -80,7 +80,8 @@ describe('Dana Identity', () => {
 
   describe('idSend', () => {
     test('should create correct send data', () => {
-      const id = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
+      const id =
+        'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const result = idSend(id, 0, 1);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
@@ -100,7 +101,8 @@ describe('Dana Identity', () => {
 
   describe('idBurn', () => {
     test('should create correct burn data', () => {
-      const handleId = 'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
+      const handleId =
+        'e6b3339123cfc3c96677a51ce7c17434f892cc5f137cac063f0e710770c4e915';
       const result = idBurn(handleId, 0);
 
       expect(result.slice(0, 4)).to.deep.equal(DANA_ID_LOKAD_ID);
