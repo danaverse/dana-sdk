@@ -70,7 +70,9 @@ export function parseOpReturn(opReturnHex: string): EmppParseSectionResult[] {
  * @param {string[]} emppStackArray - An array containing a hex string for every push of this memo OP_RETURN outputScript
  * @returns {EmppParseSectionResult[]} An array of parsed sections containing Dana Identity and Dana Vote information
  */
-export function parseMultipushStack(emppStackArray: string[]): EmppParseSectionResult[] {
+export function parseMultipushStack(
+  emppStackArray: string[]
+): EmppParseSectionResult[] {
   let results: EmppParseSectionResult[] = [];
 
   // Start at i=1 because emppStackArray[0] is OP_RESERVED

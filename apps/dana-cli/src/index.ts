@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { createIdentity } from './commands/createIdentity';
 import { createVote } from './commands/createVote';
+import { createWallet } from './commands/createWallet';
 
 const program = new Command();
 
@@ -26,9 +27,18 @@ program
   .requiredOption('-d, --direction <direction>', 'Vote direction (up or down)')
   .requiredOption('-t, --type <type>', 'Vote type (id or hash)')
   .requiredOption('-v, --vote-for <voteFor>', 'ID or hash to vote for')
-  .requiredOption('-a, --amount <amount>', 'Amount of tokens to burn for the vote')
+  .requiredOption(
+    '-a, --amount <amount>',
+    'Amount of tokens to burn for the vote'
+  )
   .option('-b, --vote-by-id <voteById>', 'ID of the voter (optional)')
   .option('-k, --key <key>', 'Private key for transaction signing')
   .action(createVote);
+
+program
+  .command('create-wallet')
+  .description('Create a new Dana wallet')
+  .action(createWallet);
+
 
 program.parse(process.argv);

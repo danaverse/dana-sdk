@@ -1,5 +1,11 @@
+import {
+  DANA_VOTE_DOWN,
+  DANA_VOTE_TYPE_HASH,
+  DANA_VOTE_TYPE_ID,
+  DANA_VOTE_UP,
+  voteCreate
+} from '@dana-protocols/core';
 import { ChronikClient } from 'chronik-client';
-import { voteCreate, DANA_VOTE_UP, DANA_VOTE_DOWN, DANA_VOTE_TYPE_ID, DANA_VOTE_TYPE_HASH } from '@dana-protocols/core';
 import { PrivateKey, Transaction } from 'ecash-lib';
 
 export async function createVote(options: {
@@ -32,14 +38,16 @@ export async function createVote(options: {
     type: voteType,
     voteFor,
     amount,
-    voteById,
+    voteById
   });
 
   // Create and sign transaction
   const privateKey = key ? PrivateKey.fromWIF(key) : PrivateKey.fromRandom();
   const address = privateKey.toAddress().toString();
 
-  const chronik = new ChronikClient(process.env.CHRONIK_URL || 'https://chronik.be.cash/xpi');
+  const chronik = new ChronikClient(
+    process.env.CHRONIK_URL || 'https://chronik.be.cash/xpi'
+  );
   const utxos = await chronik.address(address).utxos();
 
   if (utxos.length === 0) {
@@ -49,10 +57,12 @@ export async function createVote(options: {
 
   const tx = new Transaction()
     .from(utxos)
-    .addOutput(new Transaction.Output({
-      script: Transaction.Script.buildDataOut(voteData),
-      satoshis: 0,
-    }))
+    .addOutput(
+      new Transaction.Output({
+        script: Transaction.Script.buildDataOut(voteData),
+        satoshis: 0
+      })
+    )
     .change(address)
     .sign(privateKey);
 

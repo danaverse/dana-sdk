@@ -1,5 +1,9 @@
+import {
+  DANA_ID_TYPE_PAGE,
+  DANA_ID_TYPE_PROFILE,
+  idGenesis
+} from '@dana-network/core';
 import { ChronikClient } from 'chronik-client';
-import { idGenesis, DANA_ID_TYPE_PROFILE, DANA_ID_TYPE_PAGE } from '@dana-network/core';
 import { PrivateKey, Transaction } from 'ecash-lib';
 
 export async function createIdentity(options: {
@@ -22,7 +26,7 @@ export async function createIdentity(options: {
   const genesisData = idGenesis(0, {
     name,
     namespace,
-    type: idType,
+    type: idType
   });
 
   // Create and sign transaction
@@ -39,10 +43,12 @@ export async function createIdentity(options: {
 
   const tx = new Transaction()
     .from(utxos)
-    .addOutput(new Transaction.Output({
-      script: Transaction.Script.buildDataOut(genesisData),
-      satoshis: 0,
-    }))
+    .addOutput(
+      new Transaction.Output({
+        script: Transaction.Script.buildDataOut(genesisData),
+        satoshis: 0
+      })
+    )
     .change(address)
     .sign(privateKey);
 
