@@ -1,22 +1,26 @@
 {
   "name": "@dana-protocols/core",
   "version": "0.0.1",
-  "description": "Library for lixi-handle transaction building",
+  "description": "Library for Dana identity and vote transaction building",
   "keywords": [
     "ecash",
     "xec",
-    "bitcoin"
+    "bitcoin",
+    "xpi",
+    "lotus",
+    "dana"
   ],
   "bugs": {
-    "url": "https://github.com/bcProFoundation/lixi-handle/issues"
+    "url": "https://github.com/bcProFoundation/dana-sdk/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+git@github.com:bcProFoundation/lixi-handle.git"
+    "url": "git+git@github.com:bcProFoundation/dana-sdk.git"
   },
   "license": "MIT",
   "author": "vince.tran8x@gmail.com",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && tsc -p ./tsconfig.build.json",
     "coverage": "vitest run --coverage",
@@ -30,6 +34,7 @@
     "ecash-script": "^2.1.2"
   },
   "devDependencies": {
+    "@dana-network/cli": "workspace:*",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/node": "^20.14.10",
     "@types/rollup": "^0.54.0",

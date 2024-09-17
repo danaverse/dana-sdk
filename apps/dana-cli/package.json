@@ -1,0 +1,23 @@
+{
+  "name": "@dana-network/cli",
+  "version": "1.0.0",
+  "description": "CLI for Dana identity operations",
+  "main": "dist/index.js",
+  "bin": {
+    "dana-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@dana-protocols/core": "workspace:*",
+    "commander": "^11.0.0",
+    "chronik-client": "^0.26.0",
+    "ecash-lib": "^0.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "typescript": "^4.9.3"
+  }
+}

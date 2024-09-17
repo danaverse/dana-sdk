@@ -19,7 +19,8 @@
   "author": "vince.tran8x@gmail.com",
   "main": "dist/index.js",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
     "build": "pnpm clean && turbo build",
