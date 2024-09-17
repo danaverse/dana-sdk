@@ -34,7 +34,6 @@
     "ecash-script": "^2.1.2"
   },
   "devDependencies": {
-    "@dana-network/cli": "workspace:*",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/node": "^20.14.10",
     "@types/rollup": "^0.54.0",

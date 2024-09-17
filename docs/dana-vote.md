@@ -15,6 +15,7 @@ In the Danaverse system, users can build their digital reputation based on token
 
 ## Specification
 
+<!-- TODO: explain why we need VoteById and amount -->
 - Dana Vote uses the [eMPP](https://ecashbuilders.notion.site/eCash-Multi-Pushdata-Protocol-11e1b991071c4a77a3e948ba604859ac) (eCash Multi-Pushdata Protocol) to store voting data in the OP_RETURN output of a transaction.
 - Each vote requires burning a specific amount of native tokens.
 - The vote can be casted in both direction.
