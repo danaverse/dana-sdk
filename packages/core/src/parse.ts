@@ -12,31 +12,39 @@ import {
   DanaVoteForType
 } from './vote/dana-vote';
 
-export function parseTx(tx: Tx) {
-  /* Parse an lotus tx as returned by chronik for newsworthy information
-   * returns
-   * { txid, genesisInfo, opReturnInfo }
-   */
+/**
+ * Parse a transaction and extract Dana Identity and Dana Vote information.
+ * @param {Tx} tx - The transaction object to parse.
+ * @returns {EmppParseSectionResult[]} An array of parsed sections containing Dana Identity and Dana Vote information.
+ */
+export function parseTx(tx: Tx): EmppParseSectionResult[] {
+  const { outputs } = tx;
+  let results: EmppParseSectionResult[] = [];
+
+  // Iterate over outputs to check for OP_RETURN msgs
+  for (const output of outputs) {
+    const { outputScript } = output;
+    if (outputScript.startsWith(opReturn.opReturnPrefix)) {
+      const sectionResults = parseOpReturn(outputScript.slice(2));
+      results = results.concat(sectionResults);
+    }
+  }
+
+  return results;
 }
 
-export function parseOpReturn(opReturnHex: string) {
-  // TODO
-  // Initialize required vars
-  let app;
-  let msg;
-  let tokenId = false;
-
+/**
+ * Parse the OP_RETURN data of a transaction and extract Dana Identity and Dana Vote information.
+ * @param {string} opReturnHex - The hexadecimal string of the OP_RETURN data.
+ * @returns {EmppParseSectionResult[]} An array of parsed sections containing Dana Identity and Dana Vote information.
+ */
+export function parseOpReturn(opReturnHex: string): EmppParseSectionResult[] {
   // Get array of pushes
   let stack = { remainingHex: opReturnHex };
   let stackArray: string[] = [];
   while (stack.remainingHex.length > 0) {
     const { data } = consumeNextPush(stack);
     if (data !== '') {
-      // You may have an empty push in the middle of a complicated tx for some reason
-      // Mb some libraries erroneously create these
-      // e.g. https://explorer.e.cash/tx/70c2842e1b2c7eb49ee69cdecf2d6f3cd783c307c4cbeef80f176159c5891484
-      // has 4c000100 for last characters. 4c00 is just nothing.
-      // But you want to know 00 and have the correct array index
       stackArray.push(data);
     }
   }
@@ -48,48 +56,41 @@ export function parseOpReturn(opReturnHex: string) {
   switch (protocolIdentifier) {
     case opReturn.opReserved: {
       // Parse for empp OP_RETURN
-      // Spec https://github.com/Bitcoin-ABC/bitcoin-abc/blob/master/chronik/bitcoinsuite-slp/src/empp/mod.rs
       return parseMultipushStack(stackArray);
     }
     default: {
-      // If you do not recognize the protocol identifier, just print the pushes in hex
-      // If it is an app or follows a pattern, can be added later
-      app = 'unknown';
-
-      break;
+      // If you do not recognize the protocol identifier, return an empty array
+      return [];
     }
   }
-
-  return { app };
 }
 
 /**
  * Parse an empp stack
- * @param {array} emppStackArray an array containing a hex string for every push of this memo OP_RETURN outputScript
- * @returns {object} {app, msg} used to compose a useful telegram msg describing the transaction
+ * @param {string[]} emppStackArray - An array containing a hex string for every push of this memo OP_RETURN outputScript
+ * @returns {EmppParseSectionResult[]} An array of parsed sections containing Dana Identity and Dana Vote information
  */
-export function parseMultipushStack(emppStackArray: string[]) {
-  // Parsing empp txs will require specific rules depending on the type of tx
-  let msgs = [];
+export function parseMultipushStack(emppStackArray: string[]): EmppParseSectionResult[] {
+  let results: EmppParseSectionResult[] = [];
 
   // Start at i=1 because emppStackArray[0] is OP_RESERVED
   for (let i = 1; i < emppStackArray.length; i += 1) {
     if (emppStackArray[i].slice(0, 8) === opReturn.knownApps.danaId.prefix) {
-      const thisMsg = parseDanaIdSection(emppStackArray[i].slice(8));
-      msgs.push(`${opReturn.knownApps.danaId.app}:${thisMsg}`);
+      const idResult = parseDanaIdSection(emppStackArray[i].slice(8));
+      if (idResult) {
+        results.push(idResult);
+      }
     } else if (
       emppStackArray[i].slice(0, 8) === opReturn.knownApps.danaVote.prefix
     ) {
-      const thisMsg = parseDanaVoteSection(emppStackArray[i].slice(8));
-      msgs.push(`${opReturn.knownApps.danaVote.app}:${thisMsg}`);
-    } else {
-      // Since we don't know any spec or parsing rules for other types of EMPP pushes,
-      // Just add an ASCII decode of the whole thing if you see one
-      msgs.push(
-        `${'Unknown App:'}${Buffer.from(emppStackArray[i], 'hex').toString('ascii')}`
-      );
+      const voteResult = parseDanaVoteSection(emppStackArray[i].slice(8));
+      if (voteResult) {
+        results.push(voteResult);
+      }
     }
   }
+
+  return results;
 }
 
 /**

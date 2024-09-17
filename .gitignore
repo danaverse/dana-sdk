@@ -145,6 +145,3 @@ dist
 # env vars
 .env
 
-# documentation
-docs
-
