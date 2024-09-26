@@ -2,13 +2,14 @@ import { NetworkType, XAddress, XAddressType } from '@bcpros/xaddress';
 import BIP32Factory from 'bip32';
 import * as bip39 from 'bip39';
 import { ChronikClient } from 'chronik-client';
-import { Script, sha256d } from 'ecash-lib';
+import { initWasm, Script, shaRmd160 } from 'ecash-lib';
 import * as fs from 'fs';
 import * as ecc from 'tiny-secp256k1';
 
 const bip32 = BIP32Factory(ecc);
 
 export async function createWallet() {
+  await initWasm();
   const chronik = new ChronikClient(
     process.env.CHIONIK_URL || 'https://chronik.be.cash/xpi'
   );
@@ -24,7 +25,8 @@ export async function createWallet() {
   const skString = Array.prototype.map.call(privateKey, x => ('00' + x.toString(16)).slice(-2)).join('');
   const pkString = Array.prototype.map.call(identifier, x => ('00' + x.toString(16)).slice(-2)).join('');
   const xType = XAddressType.ScriptPubKey;
-  const p2pkhScript = Script.p2pkh(sha256d(identifier));
+  const p2pkh = shaRmd160(identifier);
+  const p2pkhScript = Script.p2pkh(p2pkh);
   const payload = p2pkhScript.bytecode;
   const xAddress = new XAddress(xType, NetworkType.MAIN, Buffer.from(payload));
   const address = XAddress.encode(xAddress);

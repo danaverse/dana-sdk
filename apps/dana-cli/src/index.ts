@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { createIdentity } from './commands/createIdentity';
-import { createVote } from './commands/createVote';
-import { createWallet } from './commands/createWallet';
+import { createIdentity } from './commands/create-identity';
+import { createVote } from './commands/create-vote';
+import { createWallet } from './commands/create-wallet';
 
 const program = new Command();
 
